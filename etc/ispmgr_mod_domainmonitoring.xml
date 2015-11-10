@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Title: DomainMonitoring plugin.
+ * Version: 1.0.0 (9/Nov/2015)
+ * Author: Denis.
+ * License: GPL.
+ * Site: https://montenegro-it.com
+ * Email: contact@montenegro-it.com
+-->
+<mgrdata>
+    <plugin name="domainmonitoring" version="1.0.0">
+        <name lang="ru">Мониторинг доменных имен и ip сервера на блокировки</name>
+        <description lang="ru">Плагин предназначен для мониторинга хостируемых доменов и ip адресов сервера на попадание в спам-базы или реестр запрещенных сайтов</description>
+        <url>https://montenegro-it.com/files/domainmonitoring.tar.gz</url>
+        <site>https://montenegro-it.com/plugins/domainmonitoring.html</site>
+        <version>1.0.0</version>
+        <lang>php</lang>
+        <langver strict="no">5.2</langver>
+        <require>simplexml</require>
+        <require>json</require>
+        <require>ifconfig</require>
+        <require>host</require>
+        <manager>ispmgr</manager>
+        <author name="Montenegro IT" contacts="contact@montenegro-it.com">Montenegro IT</author>
+    </plugin>
+    <handler name="domainmonitoring.php" type="xml">
+        <func minlevel="7">domainmonitoring.setting</func>
+    </handler>
+    
+    <metadata name="domainmonitoring.setting" type="form">
+        <form helpurl="https://montenegro-it.com/plugins/domainmonitoring.html">
+            <page name="general">
+                <field fullwidth="yes" name="warningtitle">
+                    <textdata name="warning" type="msg"/>
+                </field>
+                <field name="email" zoom="5" id="email">
+                    <input  type="text" name="email"/>
+                </field>
+                <field name="from" id="from">
+                    <input type="text" name="from"/>
+                </field>
+                <field name="antizapret">
+                    <input type="checkbox" show="'email','from'" name="antizapret"/>
+                    <desc name="antizapret_desc"/>
+                </field>
+                <field name="spam">
+                    <input type="checkbox" show="'email','from'"  name="spam"/>
+                    <desc name="spam_desc"/>
+                </field>
+            </page>
+            
+        </form>
+    </metadata>
+    <mainmenu level="7" name="DomainMonitoring" startpage="wwwdomain">
+        <node name="tool">
+            <node name="domainmonitoring.setting"/>
+        </node>
+    </mainmenu>
+    <lang name="ru">
+        <messages name="domainmonitoring.setting">
+            <msg name="warning">Подробная информация о работе модуля представлена на справочной странице</msg>
+            <msg name="title">Настройка модуля мониторанга доменов</msg>
+            <msg name="from">Email отправителя</msg>
+            <msg name="email">Email для уведомления о блокировках, если нужно несколько получателей, укажите через запятую.</msg>
+            <msg name="spam_desc">Уведомлять о попадании ip адресов в спам-базы</msg>
+            <msg name="antizapret_desc">Уведомлять о попадании ip адресов и доменов сервера в реестр "Роскомнадзора"</msg>
+        </messages>
+        <messages name="desktop">
+            <msg name="menu_domainmonitoring.setting" level = "7">Мониторинг реестров</msg>
+        </messages>
+    </lang>
+</mgrdata>
