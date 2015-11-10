@@ -54,27 +54,41 @@ class DomainMonitoring {
 
     static public function cron_run() {
         $config = self::get_config();
+        $message_antizapret = "";
+        $message_spam = "";
         $message = "";
+        $count_spam = 0;
+        $count_antizapret = 0;
         if ($config['action']) {
             foreach (self::full_scan($config['action']) as $key => $row) {
                 switch ($key) {
                     case "antizapret":
-                        $message.="\n\nantizapret block is:\n";
+                        $message_antizapret = "\n\nantizapret block is:\n";
                         foreach ($row['domain'] AS $item) {
-                            $message.=$item . "\n";
+                            $count_antizapret++;
+                            $message_antizapret.=$item . "\n";
                         }
                         foreach ($row['ip'] AS $item) {
-                            $message.=$item . "\n";
+                            $count_antizapret++;
+                            $message_antizapret.=$item . "\n";
                         }
                         break;
                     case "spam":
-                        $message.="\n\nspam block is:\n";
+                        $message_spam.="\n\nspam block is:\n";
                         foreach ($row['server'] AS $id => $item) {
-                            $message.=$row['ip'][$id] . " on " . $item . "\n";
+                            $count_spam++;
+                            $message_spam.=$row['ip'][$id] . " on " . $item . "\n";
                         }
                         break;
                 }
             }
+            if ($count_spam > 0) {
+                $message.=$message_spam;
+            }
+            if ($count_antizapret > 0) {
+                $message.=$message_antizapret;
+            }
+
             $hash = md5($message);
             if ($config['hash'] == $hash) {
                 return;

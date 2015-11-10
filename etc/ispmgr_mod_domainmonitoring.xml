@@ -47,9 +47,7 @@
                 <field name="from" id="from">
                     <input empty="no" type="text" name="from"/>
                 </field>
-                
             </page>
-            
         </form>
     </metadata>
     <mainmenu level="7" name="DomainMonitoring" startpage="wwwdomain">
@@ -60,7 +58,7 @@
     <lang name="ru">
         <messages name="domainmonitoring.setting">
             <msg name="warning">Подробная информация о работе модуля представлена на справочной странице</msg>
-            <msg name="title">Настройка модуля мониторанга доменов</msg>
+            <msg name="title">Настройка модуля мониторинга доменов</msg>
             <msg name="from">Email отправителя</msg>
             <msg name="email">Email для уведомления о блокировках, если нужно несколько получателей, укажите через запятую.</msg>
             <msg name="spam_desc">Уведомлять о попадании ip адресов в спам-базы</msg>
