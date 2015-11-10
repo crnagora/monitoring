@@ -1,0 +1,4 @@
+#!/bin/bash
+
+rm -r /etc/cron.d/domainmonitoring
+rm -rf /usr/local/ispmgr/var/.plugin_domainmonitoring

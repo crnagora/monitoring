@@ -33,12 +33,6 @@
                 <field fullwidth="yes" name="warningtitle">
                     <textdata name="warning" type="msg"/>
                 </field>
-                <field name="email" zoom="5" id="email">
-                    <input  type="text" name="email"/>
-                </field>
-                <field name="from" id="from">
-                    <input type="text" name="from"/>
-                </field>
                 <field name="antizapret">
                     <input type="checkbox" show="'email','from'" name="antizapret"/>
                     <desc name="antizapret_desc"/>
@@ -47,6 +41,13 @@
                     <input type="checkbox" show="'email','from'"  name="spam"/>
                     <desc name="spam_desc"/>
                 </field>
+                <field name="email" zoom="5" id="email">
+                    <input empty="no" type="text" name="email"/>
+                </field>
+                <field name="from" id="from">
+                    <input empty="no" type="text" name="from"/>
+                </field>
+                
             </page>
             
         </form>

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+echo "PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin" > /etc/cron.d/domainmonitoring
+echo "* * * * * root /usr/local/ispmgr/addon/domainmonitoring.cron.php  >/dev/null 2>&1" >> /etc/cron.d/domainmonitoring
+echo >> /etc/cron.d/domainmonitoring

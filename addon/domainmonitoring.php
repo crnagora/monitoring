@@ -22,13 +22,35 @@ define("PLUGIN_PATH", "/usr/local/ispmgr/var/.plugin_domainmonitoring/");
 include_once (PLUGIN_PATH . "function.php");
 
 switch ($func) {
-      case "domainmonitoring.setting";
-           if ($sok == "ok") {
-               $doc->addChild("ok", "ok");
+    case "domainmonitoring.setting";
+        if ($sok == "ok") {
+            DomainMonitoring::save_setting($doc->params->from, $doc->params->email, $doc->params->spam, $doc->params->antizapret);
+            $doc->addChild("ok", "ok");
             break;
-           }
-          
-          break;
-    
+        }
+
+        if (is_file(PLUGIN_PATH . "setting.txt")) {
+            $data = json_decode(file_get_contents(PLUGIN_PATH . "setting.txt"));
+            $email = implode(", ", $data->email);
+            $from = $data->from->{0};
+            $spam = $data->spam->{0};
+            $antizapret = $data->antizapret->{0};
+        } else {
+            $spam = "";
+            $antizapret = "";
+            $email = "";
+            $from = "";
+        }
+
+        $doc->addChild("email", $email);
+        $doc->addChild("from", $from);
+        if ($spam) {
+            $doc->addChild("spam", $spam);
+        }
+        if ($antizapret) {
+            $doc->addChild("antizapret", $antizapret);
+        }
+        
+        break;
 }
 echo $doc->asXML();

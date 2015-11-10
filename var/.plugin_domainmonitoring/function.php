@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Title: DomainMonitoring plugin.
  * Version: 1.0.0 (10/Nov/2015)
@@ -7,6 +8,7 @@
  * Site: https://montenegro-it.com
  * Email: contact@montenegro-it.com
  */
+
 class DomainMonitoring {
 
     static public function get_domainantizapret() {
@@ -37,17 +39,20 @@ class DomainMonitoring {
     }
 
     static public function send_mail($to, $from, $message) {
-        $headers = array();
-        $subject = "DomainMonitoring report";
-        $headers[] = "MIME-Version: 1.0";
-        $headers[] = "Content-type: text/plain; charset=utf-8";
-        $headers[] = "From: " . $from . " <" . $from . ">";
-        $headers[] = "Reply-To: " . $from . " <" . $from . ">";
-        $headers[] = "Subject: {$subject}";
-        mail($to, $subject, $message, implode("\r\n", $headers));
+        foreach ($to as $mail) {
+            $headers = array();
+            $subject = "DomainMonitoring report";
+            $headers[] = "MIME-Version: 1.0";
+            $headers[] = "Content-type: text/plain; charset=utf-8";
+            $headers[] = "From: " . $from . " <" . $from . ">";
+            $headers[] = "Reply-To: " . $from . " <" . $from . ">";
+            $headers[] = "Subject: {$subject}";
+            mail($mail, $subject, $message, implode("\r\n", $headers));
+            unset($headers);
+        }
     }
 
-    static public function start_action() {
+    static public function cron_run() {
         $config = self::get_config();
         $message = "";
         if ($config['action']) {
@@ -80,14 +85,50 @@ class DomainMonitoring {
         }
     }
 
+    static public function save_setting($from, $email, $spam, $antizapret) {
+        $tmp_email = explode(",", $email);
+        $email_array = array();
+        foreach ($tmp_email AS $row) {
+            if (filter_var(trim($row), FILTER_VALIDATE_EMAIL)) {
+                $email_array[] = trim($row);
+            }
+        }
+        if (!filter_var($from, FILTER_VALIDATE_EMAIL)) {
+            $from = "root@" . php_uname('n');
+        }
+        $data['from'] = $from;
+        $data['email'] = $email_array;
+        $data['spam'] = $spam;
+        $data['antizapret'] = $antizapret;
+        file_put_contents(PLUGIN_PATH . "setting.txt", json_encode($data));
+        chmod(PLUGIN_PATH . "setting.txt", 0600);
+    }
+
     static public function get_config() {
-        $file = file_get_contents(PLUGIN_PATH . "config.txt");
+        $file = file_get_contents(PLUGIN_PATH . "setting.txt");
         if ($file) {
             $param = json_decode($file);
-            $data['action'] = $param->action;
-            $data['to'] = $param->to;
-            $data['from'] = $param->from;
-            $data['hash'] = file_get_contents(PLUGIN_PATH . ".lock");
+
+            $spam = 0;
+            $antizapret = 0;
+            if (property_exists($param->spam, 0)) {
+                $spam = 1;
+            }
+            if (property_exists($param->antizapret, 0)) {
+                $antizapret = 1;
+            }
+            if ($antizapret && $spam) {
+                $data['action'] = 'both';
+            } elseif ($antizapret && !$spam) {
+                $data['action'] = 'antizapret';
+            } elseif (!$antizapret && $spam) {
+                $data['action'] = 'spam';
+            } else {
+                $data['action'] = 0;
+            }
+            $data['from'] = $param->from->{0};
+            $data['to'] = $param->email;
+            $data['hash'] = @file_get_contents(PLUGIN_PATH . ".lock");
         } else {
             $data['action'] = 0;
         }
@@ -140,8 +181,8 @@ class DomainMonitoring {
     }
 
     static public function filter_server($server_array) {
-        // $search_string = "has address";
-        $search_string = "not found";
+        $search_string = "has address";
+//for debug                 $search_string = "not found";
         $server = array();
         foreach ($server_array['string'] as $key => $row) {
             $pos = strpos($row, $search_string);
@@ -175,8 +216,8 @@ class DomainMonitoring {
         $return = ob_get_contents();
         ob_end_clean();
         if ($return == 0) {
-            return array('8.8.8.8', '4.4.4.4', '66.44.11.99');
-            //return array_unique($data);
+            //for debug   return array('8.8.8.8', '4.4.4.4', '66.44.11.99');
+            return array_unique($data);
         } else {
             return false;
         }
@@ -258,7 +299,8 @@ class Punycode {
                 }
                 if ($c === $n) {
                     $q = $delta;
-                    for ($k = static::BASE;; $k += static::BASE) {
+                    for ($k = static::BASE;
+                    ; $k += static::BASE) {
                         $t = $this->calculateThreshold($k, $bias);
                         if ($q < $t) {
                             break;
@@ -307,7 +349,8 @@ class Punycode {
         while ($pos < $inputLength) {
             $oldi = $i;
             $w = 1;
-            for ($k = static::BASE;; $k += static::BASE) {
+            for ($k = static::BASE;
+            ; $k += static::BASE) {
                 $digit = static::$decodeTable[$input[$pos++]];
                 $i = $i + ($digit * $w);
                 $t = $this->calculateThreshold($k, $bias);
