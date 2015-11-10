@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
  * Title: DomainMonitoring plugin.
- * Version: 1.0.0 (9/Nov/2015)
+ * Version: 1.0.1 (9/Nov/2015)
  * Author: Denis.
  * License: GPL.
  * Site: https://montenegro-it.com
  * Email: contact@montenegro-it.com
 -->
 <mgrdata>
-    <plugin name="domainmonitoring" version="1.0.0">
+    <plugin name="domainmonitoring" version="1.0.1">
         <name lang="ru">Мониторинг доменных имен и ip сервера на блокировки</name>
         <description lang="ru">Плагин предназначен для мониторинга хостируемых доменов и ip адресов сервера на попадание в спам-базы или реестр запрещенных сайтов</description>
         <url>https://montenegro-it.com/files/domainmonitoring.tar.gz</url>
         <site>https://montenegro-it.com/plugins/domainmonitoring.html</site>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
         <lang>php</lang>
         <langver strict="no">5.2</langver>
         <require>simplexml</require>

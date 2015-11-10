@@ -2,7 +2,7 @@
 <?php
 /*
  * Title: DomainMonitoring plugin.
- * Version: 1.0.0 (10/Nov/2015)
+ * Version: 1.0.1 (10/Nov/2015)
  * Author: Denis.
  * License: GPL.
  * Site: https://montenegro-it.com

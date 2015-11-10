@@ -2,7 +2,7 @@
 
 /*
  * Title: DomainMonitoring plugin.
- * Version: 1.0.0 (10/Nov/2015)
+ * Version: 1.0.1 (10/Nov/2015)
  * Author: Denis.
  * License: GPL.
  * Site: https://montenegro-it.com
@@ -58,6 +58,7 @@ class DomainMonitoring {
         $message_spam = "";
         $message = "";
         $count_spam = 0;
+        $count_item=0;
         $count_antizapret = 0;
         if ($config['action']) {
             foreach (self::full_scan($config['action']) as $key => $row) {
@@ -66,17 +67,23 @@ class DomainMonitoring {
                         $message_antizapret = "\n\nantizapret block is:\n";
                         foreach ($row['domain'] AS $item) {
                             $count_antizapret++;
+                            $count_item++;
                             $message_antizapret.=$item . "\n";
                         }
                         foreach ($row['ip'] AS $item) {
                             $count_antizapret++;
+                            $count_item++;
                             $message_antizapret.=$item . "\n";
                         }
                         break;
                     case "spam":
+                        if (!isset($row['server'])) {
+                            break;
+                        }
                         $message_spam.="\n\nspam block is:\n";
                         foreach ($row['server'] AS $id => $item) {
                             $count_spam++;
+                            $count_item++;
                             $message_spam.=$row['ip'][$id] . " on " . $item . "\n";
                         }
                         break;
@@ -90,7 +97,7 @@ class DomainMonitoring {
             }
 
             $hash = md5($message);
-            if ($config['hash'] == $hash) {
+            if ($config['hash'] == $hash || $count_item==0) {
                 return;
             } else {
                 self::send_mail($config['to'], $config['from'], $message);
